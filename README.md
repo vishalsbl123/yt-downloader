@@ -27,7 +27,7 @@ deno --version
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/yt-downloader.git
+git clone https://github.com/vishalsbl123/yt-downloader.git
 cd yt-downloader
 
 # 2. Create a virtual environment
