@@ -10,3 +10,5 @@
 # yt-dlp: the engine that actually talks to YouTube and downloads media.
 # It's a well-maintained, actively-updated library (a fork of youtube-dl).
 yt-dlp>=2024.1.0
+
+flask>=3.0.0

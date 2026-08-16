@@ -26,6 +26,10 @@ def format_duration(seconds: int) -> str:
         return f"{hours}:{minutes:02d}:{secs:02d}"
     return f"{minutes}:{secs:02d}"
 
+def is_valid_youtube_url(url: str) -> bool:
+    """Return True if url is a recognisable YouTube link (full or short)."""
+    return url.startswith("https://www.youtube.com/") or url.startswith("https://youtu.be/")
+
 
 # ---------------------------------------------------------------------------
 # SUBCOMMAND HANDLERS
@@ -35,8 +39,12 @@ def format_duration(seconds: int) -> str:
 
 def cmd_info(args):
     """Handler for:  python main.py info <url>"""
-    print(f"\nFetching info for: {args.url}\n")
 
+    if not is_valid_youtube_url(args.url):
+        print("Error: Invalid YouTube URL.")
+        return
+
+    print(f"\nFetching info for: {args.url}\n")
     info = fetch_video_info(args.url)
 
     title       = info.get("title", "Unknown")
@@ -65,7 +73,9 @@ def cmd_download(args):
     Handler for the 'download'
     subcommand: download a video via the integration layer.
     """
-
+    if not is_valid_youtube_url(args.url):
+        print("Error: Invalid YouTube URL.")
+        return
     print("Downloading started:")
     download_video(args.url, args.output, args.quality)
     print("Download finished successfully...")
@@ -73,6 +83,10 @@ def cmd_download(args):
 
 def cmd_playlist(args):
     """Handler for:  python main.py playlist <url> [options]"""
+
+    if not is_valid_youtube_url(args.url):
+        print("Error: Invalid YouTube URL.")
+        return
     print("Playlist downloading started:")
     download_playlist(args.url, args.output, args.quality)
     print("Playlist downloaded successfully.")
@@ -137,7 +151,7 @@ def build_parser() -> argparse.ArgumentParser:
     # --- SUBCOMMAND: download (inherits the shared args) --------------------
     download_parser = subparsers.add_parser(
         "download",
-        parents=[common],                       # <-- inherit all six shared args
+        parents=[common],                       # <-- inherit shared args
         help="Download a single YouTube video.",
     )
     download_parser.set_defaults(func=cmd_download)
