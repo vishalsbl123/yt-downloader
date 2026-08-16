@@ -76,6 +76,11 @@
             background-color: #cc0000;
         }
 
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
         /* Flash messages */
         .message {
             padding: 12px 16px;
@@ -95,6 +100,15 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+
+        /* Live status text shown while a download is running */
+        #status {
+            margin-top: 16px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            min-height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -110,7 +124,10 @@
     {% endfor %}
 
     {# Form POSTs to /download — handled by handle_download() in app.py #}
-    <form action="/download" method="POST">
+    <form action="/download" method="POST" id="downloadForm">
+
+        {# Filled in by JavaScript on submit; the server echoes it back as a cookie #}
+        <input type="hidden" name="download_token" id="download_token">
 
         <label for="url">YouTube URL</label>
         <input
@@ -139,11 +156,49 @@
             <option value="playlist">Playlist</option>
         </select>
 
-        <button type="submit">Download</button>
+        <button type="submit" id="submitBtn">Download</button>
+
+        <div id="status"></div>
 
     </form>
 
 </div>
+
+<script>
+    const form      = document.getElementById("downloadForm");
+    const button    = document.getElementById("submitBtn");
+    const statusBox = document.getElementById("status");
+
+    // Read a cookie value by name (returns null if not set).
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+        return match ? match[2] : null;
+    }
+
+    form.addEventListener("submit", function () {
+        // 1. Tag this download with a unique token and send it with the form.
+        const token = Date.now().toString();
+        document.getElementById("download_token").value = token;
+
+        // 2. Show the "working" state so the page doesn't look frozen.
+        button.disabled    = true;
+        button.textContent = "Downloading…";
+        statusBox.textContent = "Working on it — this can take a while for large videos or playlists.";
+
+        // 3. The server sets a cookie with this token once the file starts sending.
+        //    Watch for it, and when it appears, reset the button.
+        const timer = setInterval(function () {
+            if (getCookie("fileDownloadToken") === token) {
+                clearInterval(timer);
+                button.disabled    = false;
+                button.textContent = "Download";
+                statusBox.textContent = "Done! Check your browser's downloads.";
+                // Clear the cookie so the next download starts clean.
+                document.cookie = "fileDownloadToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+            }
+        }, 500);
+    });
+</script>
 
 </body>
 </html>
