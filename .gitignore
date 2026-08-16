@@ -1,0 +1,14 @@
+# Virtual environment — never commit this, it's machine-specific
+.venv/
+
+# Downloaded videos — personal files, not part of the tool
+downloads/
+
+# Python bytecode — auto-generated, not needed in source control
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE folders
+.vscode/
+.idea/

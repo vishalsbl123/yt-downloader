@@ -1,0 +1,12 @@
+# requirements.txt
+# ----------------
+# This file lists every external library our project needs to run.
+# Anyone (including future-you on a new machine) can recreate the exact
+# environment with a single command:  pip install -r requirements.txt
+#
+# Format is:  package_name>=minimum_version
+# The ">=" means "this version or newer".
+
+# yt-dlp: the engine that actually talks to YouTube and downloads media.
+# It's a well-maintained, actively-updated library (a fork of youtube-dl).
+yt-dlp>=2024.1.0
