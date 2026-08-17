@@ -7,6 +7,8 @@ Download YouTube videos, audio, and playlists — with **two ways to use it**:
 
 Both share the same download engine ([yt-dlp](https://github.com/yt-dlp/yt-dlp)) under the hood.
 
+> 📖 Want to understand *how it works* internally (architecture, code walkthrough, design decisions)? See **[DOCUMENTATION.md](DOCUMENTATION.md)**.
+
 ---
 
 ## Prerequisites
